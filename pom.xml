@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- 仅用于本地/IDE 多模块聚合；提交作业 zip 时老师只要 part1/ 与 part2/，可不包含本文件 -->
+  <groupId>uk.ac.lancs.scc331</groupId>
+  <artifactId>auction-coursework</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <description>Aggregator for part1 and part2 (IDE/local). Each submodule still builds standalone.</description>
+
+  <modules>
+    <module>part1</module>
+    <module>part2</module>
+  </modules>
+</project>
