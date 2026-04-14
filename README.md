@@ -69,4 +69,4 @@ mvn exec:java "-Dexec.mainClass=client.AuctionClient"
 
 ## License
 
-按课程或发布需要自行补充。
+[MIT License](LICENSE)
