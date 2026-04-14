@@ -129,5 +129,51 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- Fallback when IDE skips build extensions: set protoc/grpc plugin classifiers per OS -->
+  <profiles>
+    <profile>
+      <id>os-windows</id>
+      <activation>
+        <os><family>windows</family></os>
+      </activation>
+      <properties>
+        <os.detected.classifier>windows-x86_64</os.detected.classifier>
+      </properties>
+    </profile>
+    <profile>
+      <id>os-linux</id>
+      <activation>
+        <os><name>Linux</name></os>
+      </activation>
+      <properties>
+        <os.detected.classifier>linux-x86_64</os.detected.classifier>
+      </properties>
+    </profile>
+    <profile>
+      <id>os-mac-aarch64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os.detected.classifier>osx-aarch_64</os.detected.classifier>
+      </properties>
+    </profile>
+    <profile>
+      <id>os-mac-x64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os.detected.classifier>osx-x86_64</os.detected.classifier>
+      </properties>
+    </profile>
+  </profiles>
 </project>
 

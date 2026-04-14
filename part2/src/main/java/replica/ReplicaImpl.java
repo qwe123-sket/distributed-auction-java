@@ -296,7 +296,7 @@ public class ReplicaImpl extends UnicastRemoteObject implements ReplicatedAuctio
             if (le.seqNo <= lastApplied) {
                 continue;
             }
-            OperationResult unused = apply(le.op);
+            apply(le.op);
             lastApplied = le.seqNo;
             lastCommitted = Math.max(lastCommitted, le.seqNo);
         }

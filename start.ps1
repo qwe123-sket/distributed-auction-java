@@ -1,5 +1,5 @@
-# 仓库根目录：选择启动 Part 1 或 Part 2（不要同时运行）
-# 用法:  .\start.ps1 -Part 1    或    .\start.ps1 -Part 2
+# Start Part 1 or Part 2 on Windows (do not run both at once — ports 1099 / 50055).
+# Usage:  .\start.ps1 -Part 1   or   .\start.ps1 -Part 2
 
 param(
     [Parameter(Mandatory = $true)]
