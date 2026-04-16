@@ -80,6 +80,5 @@ foreach ($i in 1, 2, 3) {
 Write-Host ''
 Write-Host 'Part 2 ready. New terminal in this folder, then run:'
 Write-Host '  .\client.ps1          (PowerShell)'
-Write-Host '  client.cmd            (CMD)'
 Write-Host 'Or: mvn exec:java "-Dexec.mainClass=client.AuctionClient"   (quotes required in PowerShell)'
 Write-Host "PID files: $PID_DIR"

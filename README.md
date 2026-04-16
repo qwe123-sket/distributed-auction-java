@@ -11,7 +11,7 @@
 
 | 路径 | 内容 |
 |------|------|
-| `part1/` | 单节点：`server.ps1`、`client.ps1`、`client.cmd` |
+| `part1/` | 单节点：`server.ps1`、`client.ps1` |
 | `part2/` | 多副本：同上 |
 | 根目录 `pom.xml` | Maven 聚合（可选，便于 IDE 导入） |
 
@@ -50,7 +50,7 @@ cd part1
 .\server.ps1
 ```
 
-客户端在**另一终端**、同一 `part` 目录下执行 `.\client.ps1`；亦可使用 `client.cmd`（CMD）。Part 2 将路径中的 `part1` 改为 `part2`。
+客户端在**另一终端**、同一 `part` 目录下执行 `.\client.ps1`。Part 2 将路径中的 `part1` 改为 `part2`。
 
 PowerShell 下若直接使用 Maven 启动客户端，`-D` 参数需加引号：
 
