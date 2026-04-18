@@ -29,5 +29,9 @@ public class ReplicaMain {
 
         fe.registerReplica(id, name);
         System.out.println("Registered with FrontEnd as " + name);
+
+        // Keep this JVM alive so the exported replica remains reachable over RMI.
+        // Without this, main() can return and the process may exit, breaking later replicas.
+        Thread.currentThread().join();
     }
 }

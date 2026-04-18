@@ -3,6 +3,7 @@
 
 # Server scripts
 **/.pids/
+**/.logs/
 
 ### IntelliJ IDEA ###
 .idea/

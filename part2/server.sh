@@ -48,9 +48,9 @@ echo "Starting replicas..."
 for id in 1 2 3; do
   ( mvn -q exec:java -Dexec.mainClass="${REPLICA_MAIN}" -Dexec.args="${id}" ) &
   write_pid "replica${id}" $!
-  sleep 1
+  sleep 3
 done
 
-echo "Part 2 ready within ~7 seconds."
+echo "Part 2 ready within ~15 seconds."
 echo "Client: mvn -q exec:java -Dexec.mainClass=client.AuctionClient"
 echo "PID files in ${PID_DIR}."

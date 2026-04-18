@@ -8,9 +8,32 @@ Set-Location $Root
 
 $PID_DIR = Join-Path $Root '.pids'
 New-Item -ItemType Directory -Force -Path $PID_DIR | Out-Null
+$LOG_DIR = Join-Path $Root '.logs'
+New-Item -ItemType Directory -Force -Path $LOG_DIR | Out-Null
+
+function New-LogFile($name, $suffix = 'log') {
+    $path = Join-Path $LOG_DIR "$name.$suffix"
+    for ($i = 0; $i -lt 20; $i++) {
+        try {
+            $fs = [System.IO.File]::Open($path, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+            $fs.Close()
+            return $path
+        } catch {
+            Start-Sleep -Milliseconds 150
+        }
+    }
+    throw "Cannot create log file because it is still locked: $path"
+}
 
 function Write-Pid($name, $id) {
     Set-Content -Path (Join-Path $PID_DIR "$name.pid") -Value $id -Encoding ascii
+}
+
+function Ensure-Alive($proc, $name, $outLog, $errLog) {
+    Start-Sleep -Milliseconds 700
+    if ($proc.HasExited) {
+        throw "$name exited early (code=$($proc.ExitCode)). Check logs: $outLog and $errLog"
+    }
 }
 
 function Find-Rmiregistry {
@@ -55,25 +78,34 @@ $rmi = Find-Rmiregistry
 $cp = 'target/classes'
 
 Write-Host 'Starting rmiregistry on 1099...'
+$regOut = New-LogFile 'rmiregistry' 'out.log'
+$regErr = New-LogFile 'rmiregistry' 'err.log'
 $reg = Start-Process -FilePath $rmi -ArgumentList @('1099', "-J-Djava.class.path=$cp") `
-    -WorkingDirectory $Root -WindowStyle Hidden -PassThru
+    -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput $regOut -RedirectStandardError $regErr -PassThru
 Write-Pid 'rmiregistry' $reg.Id
+Ensure-Alive $reg 'rmiregistry' $regOut $regErr
 Start-Sleep -Seconds 1
 
 Write-Host 'Starting FrontEnd...'
+$feOut = New-LogFile 'frontend' 'out.log'
+$feErr = New-LogFile 'frontend' 'err.log'
 $fe = Start-Process -FilePath $mvn -ArgumentList @('-q', 'exec:java', '-Dexec.mainClass=frontend.FrontEndServer') `
-    -WorkingDirectory $Root -WindowStyle Hidden -PassThru
+    -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput $feOut -RedirectStandardError $feErr -PassThru
 Write-Pid 'frontend' $fe.Id
+Ensure-Alive $fe 'FrontEnd' $feOut $feErr
 Start-Sleep -Seconds 2
 
 Write-Host 'Starting 3 replicas...'
 foreach ($i in 1, 2, 3) {
+    $repOut = New-LogFile "replica$i" 'out.log'
+    $repErr = New-LogFile "replica$i" 'err.log'
     $p = Start-Process -FilePath $mvn -ArgumentList @(
         '-q', 'exec:java',
         '-Dexec.mainClass=replica.ReplicaMain',
         "-Dexec.args=$i"
-    ) -WorkingDirectory $Root -WindowStyle Hidden -PassThru
+    ) -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput $repOut -RedirectStandardError $repErr -PassThru
     Write-Pid "replica$i" $p.Id
+    Ensure-Alive $p "replica$i" $repOut $repErr
     Start-Sleep -Seconds 1
 }
 
@@ -82,3 +114,4 @@ Write-Host 'Part 2 ready. New terminal in this folder, then run:'
 Write-Host '  .\client.ps1          (PowerShell)'
 Write-Host 'Or: mvn exec:java "-Dexec.mainClass=client.AuctionClient"   (quotes required in PowerShell)'
 Write-Host "PID files: $PID_DIR"
+Write-Host "Log files: $LOG_DIR"
